@@ -58,27 +58,29 @@
     border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   }
   #attendee-list li.loading { font-style: italic; color: #555; }
-  .left .header {
+  .left .header-panel {
   display: flex;
   align-items: center;
-  gap: 1rem; /* space between logo and title */
+  gap: 1rem;             /* space between logo and title */
   margin-bottom: 2rem;
+  padding: 1rem 1.5rem;  /* add some padding */
+  background: #f0f4ff;   /* subtle light-blue background */
+  border-radius: 10px;    /* rounded corners */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* soft shadow */
 }
 
-.left .logo {
-  max-height: 50px; /* adjust size */
+.left .header-panel .logo {
+  max-height: 50px;      /* adjust logo size */
   width: auto;
 }
-
 </style>
 </head>
 <body>
 
 <div class="left">
-  <div class="header">
-    <img src="PUNT_LOGO.PNG" 
-         alt="PUNT Logo" class="logo">
-    <h2>Club Sign-In</h2>
+  <div class="header-panel">
+    <img src="PUNT_LOGO.PNG" alt="PUNT Logo" class="logo">
+    <h2>PUNT Sign-in</h2>
   </div>
 
   <form id="signInForm">
@@ -86,12 +88,13 @@
     <input type="text" name="studentId" placeholder="Student ID" required>
     <label class="checkbox">
       <input type="checkbox" name="agree" required>
-      I agree to receive weekly emails from PUNT
+      I agree to receive occasional emails from PUNT
     </label>
     <button type="submit" id="submit-button">Sign In</button>
     <div id="message"></div>
   </form>
 </div>
+
 
 
 <div class="right">
