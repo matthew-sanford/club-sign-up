@@ -88,14 +88,6 @@
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
-    #loading-bar {
-      display: none;
-      margin-top: 1rem;
-      height: 6px;
-      background: #2563eb;
-      border-radius: 3px;
-      animation: loading 1s infinite;
-    }
 
     @keyframes loading {
       0% { width: 0; opacity: 0.5; }
@@ -103,23 +95,49 @@
       100% { width: 100%; opacity: 0.5; }
     }
 
+    button.loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+
+button.loading::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 3px solid white;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
   </style>
 </head>
 <body>
-  <div class="form-panel">
-  <h2>Club Sign-In</h2>
-  <form id="signInForm">
-    <input type="text" name="name" placeholder="Name" required>
-    <input type="text" name="studentId" placeholder="Student ID" required>
-    <label>
-      <input type="checkbox" name="agree" required>
-      I agree to receive weekly emails from PUNT
-    </label>
-    <button type="submit">Sign In</button>
-    <div id="message"></div>
-    <div id="loading-bar"></div>
-  </form>
-</div>
+  <div class="left">
+    <h2>Club Sign-In</h2>
+    <form id="signInForm">
+      <input type="text" name="name" placeholder="Name" required>
+      <input type="text" name="studentId" placeholder="Student ID" required>
+      <label class="checkbox">
+        <input type="checkbox" name="agree" required>
+        I agree to receive weekly emails from PUNT
+      </label>
+      <button type="submit" id="submit-button">Sign In</button>
+      <div id="message"></div>
+
+    </form>
+  </div>
 
   <div class="right">
     <div class="attendees">
@@ -129,34 +147,35 @@
       </ul>
     </div>
   </div>
+</body>
+
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbxQqIjR8g-9qX3jr8NSXIY3SvcdwlXAlDfIgfI8YR50cumka-sivRQYvo_jygZll73t/exec";
-    const form = document.getElementById("attendance-form");
+    const form = document.getElementById("signInForm");
     const messageDiv = document.getElementById("message");
     const attendeeList = document.getElementById("attendee-list");
 
     form.addEventListener("submit", e => {
   e.preventDefault();
 
-  // Clear + show loading
-  form.reset();
+  // Show loading spinner
+  submitButton.classList.add("loading");
   messageDiv.innerHTML = "";
-  document.getElementById("loading-bar").style.display = "block";
 
   fetch(scriptURL, { method: "POST", body: new FormData(form)})
     .then(res => {
-      document.getElementById("loading-bar").style.display = "none";
+      submitButton.classList.remove("loading");
+      form.reset();
       messageDiv.innerHTML = '<p class="success">✅ Submitted!</p>';
-      loadAttendees(); // refresh
+      loadAttendees(); // refresh attendee list
     })
     .catch(err => {
-      document.getElementById("loading-bar").style.display = "none";
+      submitButton.classList.remove("loading");
       messageDiv.innerHTML = '<p class="error">❌ Error. Try again.</p>';
     });
 });
-
-
+    
     function loadAttendees() {
   attendeeList.innerHTML = "<li>⏳ Loading attendees...</li>";
 
