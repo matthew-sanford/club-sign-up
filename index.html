@@ -151,20 +151,23 @@ button.loading::after {
 
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxQqIjR8g-9qX3jr8NSXIY3SvcdwlXAlDfIgfI8YR50cumka-sivRQYvo_jygZll73t/exec";
     const form = document.getElementById("signInForm");
-    const messageDiv = document.getElementById("message");
-    const attendeeList = document.getElementById("attendee-list");
+const submitButton = document.getElementById("submit-button");
+const messageDiv = document.getElementById("message");
 
-    form.addEventListener("submit", e => {
+form.addEventListener("submit", e => {
   e.preventDefault();
 
-  // Show loading spinner
+  // Show spinner
   submitButton.classList.add("loading");
   messageDiv.innerHTML = "";
 
-  fetch(scriptURL, { method: "POST", body: new FormData(form)})
-    .then(res => {
+  // Must include all fields expected by Apps Script
+  const formData = new FormData(form);
+
+  fetch(scriptURL, { method: "POST", body: formData })
+    .then(res => res.text())  // Apps Script returns plain text "Success"
+    .then(text => {
       submitButton.classList.remove("loading");
       form.reset();
       messageDiv.innerHTML = '<p class="success">✅ Submitted!</p>';
@@ -173,8 +176,10 @@ button.loading::after {
     .catch(err => {
       submitButton.classList.remove("loading");
       messageDiv.innerHTML = '<p class="error">❌ Error. Try again.</p>';
+      console.error(err);
     });
 });
+
     
     function loadAttendees() {
   attendeeList.innerHTML = "<li>⏳ Loading attendees...</li>";
