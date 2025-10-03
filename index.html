@@ -139,25 +139,26 @@
     });
 
     function loadAttendees() {
-      fetch(scriptURL + "?mode=GET")
-        .then(res => res.json())
-        .then(data => {
-          attendeeList.innerHTML = "";
-          if (data.length === 0) {
-            attendeeList.innerHTML = "<li>No sign-ups yet.</li>";
-          } else {
-            data.forEach(item => {
-              const li = document.createElement("li");
-              li.textContent = item.name + " (" + item.studentId + ")";
-              attendeeList.appendChild(li);
-            });
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          attendeeList.innerHTML = "<li>Error loading attendees.</li>";
+  fetch(scriptURL + "?mode=GET")
+    .then(res => res.json())
+    .then(data => {
+      attendeeList.innerHTML = "";
+      if (data.length === 0) {
+        attendeeList.innerHTML = "<li>No sign-ups yet.</li>";
+      } else {
+        data.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = item.name + " (" + item.studentId + ")";
+          attendeeList.appendChild(li);
         });
-    }
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      attendeeList.innerHTML = "<li>Error loading attendees.</li>";
+    });
+}
+
 
     loadAttendees();
   </script>
