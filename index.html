@@ -3,27 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PUNT Attendance Sign-Up</title>
+  <title>PUNT Attendance</title>
   <style>
     body {
       font-family: 'Inter', sans-serif;
       background: #f5f8fc;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
       margin: 0;
+      display: flex;
+      height: 100vh;
     }
-    .container {
-      background: white;
+    .left, .right {
+      flex: 1;
       padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 400px;
+      overflow-y: auto;
+    }
+    .left {
+      background: white;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
     h2 {
-      text-align: center;
       color: #1e3a8a;
       margin-bottom: 1rem;
     }
@@ -62,17 +63,35 @@
     button:hover {
       background: #1e40af;
     }
-    .success, .error {
+    #message {
       margin-top: 1rem;
       text-align: center;
       font-weight: bold;
     }
     .success { color: green; }
     .error { color: red; }
+    .attendees {
+      padding: 1rem;
+    }
+    .attendees h3 {
+      color: #1e3a8a;
+      margin-bottom: 1rem;
+    }
+    .attendees ul {
+      list-style: none;
+      padding: 0;
+    }
+    .attendees li {
+      background: white;
+      margin-bottom: 0.5rem;
+      padding: 0.8rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="left">
     <h2>PUNT Attendance</h2>
     <form id="attendance-form">
       <label for="name">Name</label>
@@ -90,11 +109,20 @@
       <div id="message"></div>
     </form>
   </div>
+  <div class="right">
+    <div class="attendees">
+      <h3>Current Meeting Attendees</h3>
+      <ul id="attendee-list">
+        <li>Loading...</li>
+      </ul>
+    </div>
+  </div>
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbxQqIjR8g-9qX3jr8NSXIY3SvcdwlXAlDfIgfI8YR50cumka-sivRQYvo_jygZll73t/exec";
     const form = document.getElementById("attendance-form");
     const messageDiv = document.getElementById("message");
+    const attendeeList = document.getElementById("attendee-list");
 
     form.addEventListener("submit", e => {
       e.preventDefault();
@@ -102,12 +130,37 @@
         .then(res => {
           messageDiv.innerHTML = '<p class="success">✅ Submitted successfully!</p>';
           form.reset();
+          loadAttendees(); // Refresh list
         })
         .catch(err => {
           console.error(err);
           messageDiv.innerHTML = '<p class="error">❌ Error. Try again.</p>';
         });
     });
+
+    function loadAttendees() {
+      fetch(scriptURL + "?mode=GET")
+        .then(res => res.json())
+        .then(data => {
+          attendeeList.innerHTML = "";
+          if (data.length === 0) {
+            attendeeList.innerHTML = "<li>No sign-ups yet.</li>";
+          } else {
+            data.forEach(item => {
+              const li = document.createElement("li");
+              li.textContent = item.name + " (" + item.studentId + ")";
+              attendeeList.appendChild(li);
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          attendeeList.innerHTML = "<li>Error loading attendees.</li>";
+        });
+    }
+
+    loadAttendees();
   </script>
 </body>
 </html>
+
