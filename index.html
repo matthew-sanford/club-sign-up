@@ -1,127 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PUNT Attendance</title>
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f5f8fc;
-      margin: 0;
-      display: flex;
-      height: 100vh;
-    }
-    .left, .right {
-      flex: 1;
-      padding: 2rem;
-      overflow-y: auto;
-    }
-    .left {
-      background: white;
-      box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    h2 {
-      color: #1e3a8a;
-      margin-bottom: 1rem;
-    }
-    label {
-      font-weight: 500;
-      display: block;
-      margin: 1rem 0 0.3rem;
-    }
-    input[type="text"], input[type="number"] {
-      width: 100%;
-      padding: 0.7rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-    .checkbox {
-      margin-top: 1rem;
-      display: flex;
-      align-items: center;
-    }
-    .checkbox input {
-      margin-right: 0.5rem;
-    }
-    button {
-      margin-top: 1.5rem;
-      width: 100%;
-      padding: 0.8rem;
-      background: #2563eb;
-      color: white;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    button:hover {
-      background: #1e40af;
-    }
-    #message {
-      margin-top: 1rem;
-      text-align: center;
-      font-weight: bold;
-    }
-    .success { color: green; }
-    .error { color: red; }
-    .attendees {
-      padding: 1rem;
-    }
-    .attendees h3 {
-      color: #1e3a8a;
-      margin-bottom: 1rem;
-    }
-    .attendees ul {
-      list-style: none;
-      padding: 0;
-    }
-    .attendees li {
-      background: white;
-      margin-bottom: 0.5rem;
-      padding: 0.8rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-
-    @keyframes loading {
-      0% { width: 0; opacity: 0.5; }
-      50% { width: 80%; opacity: 1; }
-      100% { width: 100%; opacity: 0.5; }
-    }
-
-    button.loading {
-  position: relative;
-  color: transparent;
-  pointer-events: none;
-}
-
-button.loading::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 20px;
-  height: 20px;
-  margin: -10px 0 0 -10px;
-  border: 3px solid white;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PUNT Attendance</title>
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f5f8fc;
+    margin: 0;
+    display: flex;
+    height: 100vh;
+  }
+  .left, .right {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+  }
+  .left {
+    background: white;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  h2 { color: #1e3a8a; margin-bottom: 1rem; }
+  label { font-weight: 500; display: block; margin: 1rem 0 0.3rem; }
+  input[type="text"], input[type="number"] {
+    width: 100%; padding: 0.7rem; border: 1px solid #ccc;
+    border-radius: 8px; font-size: 1rem; margin-bottom: 0.5rem;
+  }
+  .checkbox { display: flex; align-items: center; margin-top: 0.5rem; }
+  .checkbox input { margin-right: 0.5rem; }
+  button {
+    margin-top: 1rem; width: 100%; padding: 0.8rem;
+    background: #2563eb; color: white; font-size: 1rem;
+    border: none; border-radius: 8px; cursor: pointer;
+    transition: background 0.2s; position: relative;
+  }
+  button:hover { background: #1e40af; }
+  button.loading { color: transparent; pointer-events: none; }
+  button.loading::after {
+    content: "";
+    position: absolute; left: 50%; top: 50%;
+    width: 20px; height: 20px; margin: -10px 0 0 -10px;
+    border: 3px solid white; border-top-color: transparent;
+    border-radius: 50%; animation: spin 1s linear infinite;
+  }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  #message { margin-top: 1rem; text-align: center; font-weight: bold; }
+  .success { color: green; } .error { color: red; }
+  .attendees { padding: 1rem; }
+  .attendees h3 { color: #1e3a8a; margin-bottom: 1rem; }
+  .attendees ul { list-style: none; padding: 0; }
+  .attendees li {
+    background: white; margin-bottom: 0.5rem; padding: 0.8rem;
+    border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+</style>
 </head>
 <body>
   <div class="left">
@@ -135,7 +71,6 @@ button.loading::after {
       </label>
       <button type="submit" id="submit-button">Sign In</button>
       <div id="message"></div>
-
     </form>
   </div>
 
@@ -147,31 +82,46 @@ button.loading::after {
       </ul>
     </div>
   </div>
-</body>
 
-
-  <script>
-    const form = document.getElementById("signInForm");
+<script>
+const scriptURL = "YOUR_PUBLISHED_WEB_APP_URL"; // replace with /exec URL
+const form = document.getElementById("signInForm");
 const submitButton = document.getElementById("submit-button");
 const messageDiv = document.getElementById("message");
+const attendeeList = document.getElementById("attendee-list");
+
+// Load attendee list
+function loadAttendees() {
+  attendeeList.innerHTML = "<li>⏳ Loading attendees...</li>";
+  fetch(scriptURL)
+    .then(res => res.json())
+    .then(data => {
+      attendeeList.innerHTML = "";
+      if (data.length === 0) attendeeList.innerHTML = "<li>No sign-ups yet.</li>";
+      else data.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item.name + " (" + item.studentId + ")";
+        attendeeList.appendChild(li);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      attendeeList.innerHTML = "<li>Error loading attendees.</li>";
+    });
+}
 
 form.addEventListener("submit", e => {
   e.preventDefault();
-
-  // Show spinner
   submitButton.classList.add("loading");
   messageDiv.innerHTML = "";
 
-  // Must include all fields expected by Apps Script
-  const formData = new FormData(form);
-
-  fetch(scriptURL, { method: "POST", body: formData })
-    .then(res => res.text())  // Apps Script returns plain text "Success"
+  fetch(scriptURL, { method: "POST", body: new FormData(form) })
+    .then(res => res.text())
     .then(text => {
       submitButton.classList.remove("loading");
       form.reset();
       messageDiv.innerHTML = '<p class="success">✅ Submitted!</p>';
-      loadAttendees(); // refresh attendee list
+      loadAttendees();
     })
     .catch(err => {
       submitButton.classList.remove("loading");
@@ -180,34 +130,8 @@ form.addEventListener("submit", e => {
     });
 });
 
-    
-    function loadAttendees() {
-  attendeeList.innerHTML = "<li>⏳ Loading attendees...</li>";
-
-  fetch(scriptURL)
-    .then(res => res.json())
-    .then(data => {
-      attendeeList.innerHTML = "";
-      if (data.length === 0) {
-        attendeeList.innerHTML = "<li>No sign-ups yet.</li>";
-      } else {
-        data.forEach(item => {
-          const li = document.createElement("li");
-          li.textContent = item.name + " (" + item.studentId + ")";
-          attendeeList.appendChild(li);
-        });
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      attendeeList.innerHTML = "<li>Error loading attendees.</li>";
-    });
-  }
-
-
-
-    loadAttendees();
-  </script>
+loadAttendees();
+</script>
 </body>
 </html>
 
