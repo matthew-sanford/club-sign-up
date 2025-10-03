@@ -57,6 +57,7 @@
     background: white; margin-bottom: 0.5rem; padding: 0.8rem;
     border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   }
+  #attendee-list li.loading { font-style: italic; color: #555; }
 </style>
 </head>
 <body>
@@ -79,22 +80,20 @@
   <div class="attendees">
     <h3>Current Meeting Attendees</h3>
     <ul id="attendee-list">
-      <li>Loading...</li>
+      <li class="loading">Loading attendees...</li>
     </ul>
   </div>
 </div>
 
 <script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbyuAk3qmqTB25xEm4C_wMJObfEQChyzy4O1dgBPLTidnHEgr3Yb1ujgT5qBHncecp5p/exec"; // replace with your /exec URL
+const scriptURL = "YOUR_EXEC_URL_HERE"; // replace with your /exec URL
 const form = document.getElementById("signInForm");
 const submitButton = document.getElementById("submit-button");
 const messageDiv = document.getElementById("message");
 const attendeeList = document.getElementById("attendee-list");
 
-// Load attendee list
+// Load attendee list (only updates list content, doesn't flash)
 function loadAttendees() {
-  attendeeList.innerHTML = "<li>⏳ Loading attendees...</li>";
-
   fetch(scriptURL)
     .then(res => res.text())
     .then(text => {
@@ -102,24 +101,26 @@ function loadAttendees() {
       try { data = JSON.parse(text); }
       catch(err) {
         console.error("Invalid JSON:", text);
-        attendeeList.innerHTML = "<li>Error loading attendees.</li>";
+        attendeeList.innerHTML = "<li class='error'>Error loading attendees.</li>";
         return;
       }
 
       attendeeList.innerHTML = "";
-      if (!data || data.length === 0) attendeeList.innerHTML = "<li>No sign-ups yet.</li>";
-      else data.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item.name + " (" + item.studentId + ")";
-        attendeeList.appendChild(li);
-      });
+      if (!data || data.length === 0) {
+        attendeeList.innerHTML = "<li>No sign-ups yet.</li>";
+      } else {
+        data.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = item.name + " (" + item.studentId + ")";
+          attendeeList.appendChild(li);
+        });
+      }
     })
     .catch(err => {
       console.error(err);
-      attendeeList.innerHTML = "<li>Error loading attendees.</li>";
+      attendeeList.innerHTML = "<li class='error'>Error loading attendees.</li>";
     });
 }
-
 
 // Form submit
 form.addEventListener("submit", e => {
@@ -135,7 +136,7 @@ form.addEventListener("submit", e => {
       submitButton.classList.remove("loading");
       form.reset();
       messageDiv.innerHTML = '<p class="success">✅ Submitted!</p>';
-      loadAttendees(); // immediately refresh attendee list
+      loadAttendees(); // refresh attendee list immediately
     })
     .catch(err => {
       submitButton.classList.remove("loading");
@@ -144,9 +145,10 @@ form.addEventListener("submit", e => {
     });
 });
 
-// Initial load
+// Initial load (only once on page load)
 loadAttendees();
 </script>
 
 </body>
 </html>
+
