@@ -73,6 +73,20 @@
   max-height: 50px;      /* adjust logo size */
   width: auto;
 }
+.left, .left * {
+  box-sizing: border-box; /* includes padding/border in width calculation */
+}
+
+.left .header-panel {
+  width: 100%;
+}
+.left input[type="text"],
+.left input[type="number"],
+.left button {
+  width: 100%;
+  max-width: 400px; /* optional: keeps everything uniform and prevents stretching */
+}
+
 </style>
 </head>
 <body>
