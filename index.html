@@ -95,19 +95,18 @@ function loadAttendees() {
   attendeeList.innerHTML = "<li>⏳ Loading attendees...</li>";
 
   fetch(scriptURL)
-    .then(res => res.text())
+    .then(res => res.text())  // fetch as text
     .then(text => {
       let data;
-      try {
-        data = JSON.parse(text);
-      } catch (err) {
+      try { data = JSON.parse(text); } // parse manually
+      catch(err) {
         console.error("Invalid JSON:", text);
         attendeeList.innerHTML = "<li>Error loading attendees.</li>";
         return;
       }
 
       attendeeList.innerHTML = "";
-      if (!data || data.length === 0) attendeeList.innerHTML = "<li>No sign-ups yet.</li>";
+      if (!data.length) attendeeList.innerHTML = "<li>No sign-ups yet.</li>";
       else data.forEach(item => {
         const li = document.createElement("li");
         li.textContent = item.name + " (" + item.studentId + ")";
@@ -119,6 +118,7 @@ function loadAttendees() {
       attendeeList.innerHTML = "<li>Error loading attendees.</li>";
     });
 }
+
 
 
 
