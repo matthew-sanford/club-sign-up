@@ -95,11 +95,11 @@ function loadAttendees() {
   attendeeList.innerHTML = "<li>⏳ Loading attendees...</li>";
 
   fetch(scriptURL)
-    .then(res => res.text()) // fetch as text first
+    .then(res => res.text())
     .then(text => {
       let data;
       try {
-        data = JSON.parse(text); // parse manually
+        data = JSON.parse(text);
       } catch (err) {
         console.error("Invalid JSON:", text);
         attendeeList.innerHTML = "<li>Error loading attendees.</li>";
@@ -119,6 +119,8 @@ function loadAttendees() {
       attendeeList.innerHTML = "<li>Error loading attendees.</li>";
     });
 }
+
+
 
 
 form.addEventListener("submit", e => {
