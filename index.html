@@ -5,88 +5,174 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PUNT Attendance</title>
 <style>
-  body {
-    font-family: 'Inter', sans-serif;
-    background: #f5f8fc;
-    margin: 0;
-    display: flex;
-    height: 100vh;
-  }
-  .left, .right {
-    flex: 1;
-    padding: 2rem;
-    overflow-y: auto;
-  }
-  .left {
-    background: white;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  h2 { color: #1e3a8a; margin-bottom: 1rem; }
-  label { font-weight: 500; display: block; margin: 1rem 0 0.3rem; }
-  input[type="text"], input[type="number"] {
-    width: 100%; padding: 0.7rem; border: 1px solid #ccc;
-    border-radius: 8px; font-size: 1rem; margin-bottom: 0.5rem;
-  }
-  .checkbox { display: flex; align-items: center; margin-top: 0.5rem; }
-  .checkbox input { margin-right: 0.5rem; }
-  button {
-    margin-top: 1rem; width: 100%; padding: 0.8rem;
-    background: #2563eb; color: white; font-size: 1rem;
-    border: none; border-radius: 8px; cursor: pointer;
-    transition: background 0.2s; position: relative;
-  }
-  button:hover { background: #1e40af; }
-  button.loading { color: transparent; pointer-events: none; }
-  button.loading::after {
-    content: "";
-    position: absolute; left: 50%; top: 50%;
-    width: 20px; height: 20px; margin: -10px 0 0 -10px;
-    border: 3px solid white; border-top-color: transparent;
-    border-radius: 50%; animation: spin 1s linear infinite;
-  }
-  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-  #message { margin-top: 1rem; text-align: center; font-weight: bold; }
-  .success { color: green; } .error { color: red; }
-  .attendees { padding: 1rem; }
-  .attendees h3 { color: #1e3a8a; margin-bottom: 1rem; }
-  .attendees ul { list-style: none; padding: 0; }
-  .attendees li {
-    background: white; margin-bottom: 0.5rem; padding: 0.8rem;
-    border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  }
-  #attendee-list li.loading { font-style: italic; color: #555; }
-  .left .header-panel {
+/* Global */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f5f8fc;
+  display: flex;
+  height: 100vh;
+}
+
+/* Left panel */
+.left {
+  flex: 1;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.1);
+}
+
+/* Header panel with logo */
+.left .header-panel {
   display: flex;
   align-items: center;
-  gap: 1rem;             /* space between logo and title */
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: #f0f4ff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   margin-bottom: 2rem;
-  padding: 1rem 1.5rem;  /* add some padding */
-  background: #f0f4ff;   /* subtle light-blue background */
-  border-radius: 10px;    /* rounded corners */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* soft shadow */
+  width: 100%;
+  max-width: 400px;
 }
 
-.left .header-panel .logo {
-  max-height: 50px;      /* adjust logo size */
+.left .header-panel img.logo {
+  max-height: 50px;
   width: auto;
 }
-.left, .left * {
-  box-sizing: border-box; /* includes padding/border in width calculation */
+
+.left .header-panel h2 {
+  color: #1e3a8a;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
-.left .header-panel {
+/* Form */
+.left form {
   width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
+
 .left input[type="text"],
-.left input[type="number"],
+.left input[type="number"] {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.left .checkbox {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.left .checkbox input {
+  margin-right: 0.5rem;
+}
+
 .left button {
   width: 100%;
-  max-width: 400px; /* optional: keeps everything uniform and prevents stretching */
+  padding: 0.8rem;
+  background: #2563eb;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
 }
 
+.left button:hover {
+  background: #1e40af;
+}
+
+.left button.loading {
+  color: transparent;
+  pointer-events: none;
+}
+
+.left button.loading::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 3px solid white;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#message {
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.success { color: green; }
+.error { color: red; }
+
+/* Right panel */
+.right {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  background: #f5f8fc;
+}
+
+/* Attendees card */
+.attendees {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+}
+
+.attendees h3 {
+  color: #1e3a8a;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.attendees ul {
+  list-style: none;
+  padding: 0;
+}
+
+.attendees li {
+  background: #f9f9f9;
+  margin-bottom: 0.5rem;
+  padding: 0.8rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
 </style>
 </head>
 <body>
@@ -94,7 +180,7 @@
 <div class="left">
   <div class="header-panel">
     <img src="PUNT_LOGO.PNG" alt="PUNT Logo" class="logo">
-    <h2>PUNT Sign-in</h2>
+    <h2>Club Sign-In</h2>
   </div>
 
   <form id="signInForm">
@@ -102,23 +188,22 @@
     <input type="text" name="studentId" placeholder="Student ID" required>
     <label class="checkbox">
       <input type="checkbox" name="agree" required>
-      I agree to receive occasional emails from PUNT
+      I agree to receive weekly emails from PUNT
     </label>
     <button type="submit" id="submit-button">Sign In</button>
     <div id="message"></div>
   </form>
 </div>
 
-
-
 <div class="right">
   <div class="attendees">
     <h3>Current Meeting Attendees</h3>
     <ul id="attendee-list">
-      <li class="loading">Loading attendees...</li>
+      <li>Loading...</li>
     </ul>
   </div>
 </div>
+
 
 <script>
 const scriptURL = "https://script.google.com/macros/s/AKfycbyuAk3qmqTB25xEm4C_wMJObfEQChyzy4O1dgBPLTidnHEgr3Yb1ujgT5qBHncecp5p/exec"; // replace with your /exec URL
