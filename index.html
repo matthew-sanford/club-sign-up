@@ -88,27 +88,39 @@
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
+    #loading-bar {
+      display: none;
+      margin-top: 1rem;
+      height: 6px;
+      background: #2563eb;
+      border-radius: 3px;
+      animation: loading 1s infinite;
+    }
+
+    @keyframes loading {
+      0% { width: 0; opacity: 0.5; }
+      50% { width: 80%; opacity: 1; }
+      100% { width: 100%; opacity: 0.5; }
+    }
+
   </style>
 </head>
 <body>
-  <div class="left">
-    <h2>PUNT Attendance</h2>
-    <form id="attendance-form">
-      <label for="name">Name</label>
-      <input type="text" id="name" name="name" required>
+  <div class="form-panel">
+  <h2>Club Sign-In</h2>
+  <form id="signInForm">
+    <input type="text" name="name" placeholder="Name" required>
+    <input type="text" name="studentId" placeholder="Student ID" required>
+    <label>
+      <input type="checkbox" name="agree" required>
+      I agree to receive weekly emails from PUNT
+    </label>
+    <button type="submit">Sign In</button>
+    <div id="message"></div>
+    <div id="loading-bar"></div>
+  </form>
+</div>
 
-      <label for="studentId">Student ID</label>
-      <input type="number" id="studentId" name="studentId" required>
-
-      <div class="checkbox">
-        <input type="checkbox" id="emails" name="emails" required>
-        <label for="emails">I agree to receive weekly emails from PUNT</label>
-      </div>
-
-      <button type="submit">Submit</button>
-      <div id="message"></div>
-    </form>
-  </div>
   <div class="right">
     <div class="attendees">
       <h3>Current Meeting Attendees</h3>
@@ -125,21 +137,30 @@
     const attendeeList = document.getElementById("attendee-list");
 
     form.addEventListener("submit", e => {
-      e.preventDefault();
-      fetch(scriptURL, { method: "POST", body: new FormData(form)})
-        .then(res => {
-          messageDiv.innerHTML = '<p class="success">✅ Submitted successfully!</p>';
-          form.reset();
-          loadAttendees(); // Refresh list
-        })
-        .catch(err => {
-          console.error(err);
-          messageDiv.innerHTML = '<p class="error">❌ Error. Try again.</p>';
-        });
+  e.preventDefault();
+
+  // Clear + show loading
+  form.reset();
+  messageDiv.innerHTML = "";
+  document.getElementById("loading-bar").style.display = "block";
+
+  fetch(scriptURL, { method: "POST", body: new FormData(form)})
+    .then(res => {
+      document.getElementById("loading-bar").style.display = "none";
+      messageDiv.innerHTML = '<p class="success">✅ Submitted!</p>';
+      loadAttendees(); // refresh
+    })
+    .catch(err => {
+      document.getElementById("loading-bar").style.display = "none";
+      messageDiv.innerHTML = '<p class="error">❌ Error. Try again.</p>';
     });
+});
+
 
     function loadAttendees() {
-  fetch(scriptURL + "?mode=GET")
+  attendeeList.innerHTML = "<li>⏳ Loading attendees...</li>";
+
+  fetch(scriptURL)
     .then(res => res.json())
     .then(data => {
       attendeeList.innerHTML = "";
@@ -157,7 +178,8 @@
       console.error(err);
       attendeeList.innerHTML = "<li>Error loading attendees.</li>";
     });
-}
+  }
+
 
 
     loadAttendees();
